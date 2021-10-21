@@ -1,0 +1,103 @@
+version: '3.7'
+services:
+  configservice:
+    image: yohanko1/configservice
+    restart: always
+    networks: 
+      - common_network
+    ports:
+      - 8888:8888
+
+  registry:
+    image: yohanko1/registry
+    depends_on:
+      - configservice
+    restart: always
+    networks: 
+      - common_network
+    ports:
+      - 8761:8761
+    environment:
+      CONFIG_SERVER: configservice:8888
+      WAIT_HOSTS: configservice:8888
+
+  apigateway:
+    image: yohanko1/apigateway
+    depends_on:
+      - configservice
+      - registry
+    restart: always
+    networks: 
+      - common_network
+    ports:
+      - 8081:8081
+    environment:
+      CONFIG_SERVER: configservice:8888
+      REGISTRY_SERVER: registry:8761
+      WAIT_HOSTS: configservice:8888, registry:8761
+
+  reviewdb:
+    image: mysql:8.0
+    volumes:
+      - review_data:/var/lib/mysql
+    restart: always
+    networks: 
+      - common_network
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: review
+
+  reviewservice:
+    image: yohanko1/reviewservice
+    depends_on:
+      - configservice
+      - registry
+      - reviewdb
+    restart: always
+    networks: 
+      - common_network
+    environment:
+      CONFIG_SERVER: configservice:8888
+      REGISTRY_SERVER: registry:8761
+      MYSQL_HOST: reviewdb:3306
+      WAIT_HOSTS: configservice:8888, registry:8761, reviewdb:3306
+
+  productdb:
+    image: mysql:8.0
+    volumes:
+      - product_data:/var/lib/mysql
+    restart: always
+    networks: 
+      - common_network
+    ports:
+      - 3307:3307
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: product
+      MYSQL_TCP_PORT: 3307
+
+  productservice:
+    image: yohanko1/productservice
+    depends_on:
+      - configservice
+      - registry
+      - productdb
+    restart: always
+    networks: 
+      - common_network
+    environment:
+      CONFIG_SERVER: configservice:8888
+      REGISTRY_SERVER: registry:8761
+      MYSQL_HOST: productdb:3307
+      WAIT_HOSTS: configservice:8888, registry:8761, productdb:3307
+
+networks:
+  common_network:
+    driver: bridge
+
+volumes:
+  review_data:
+  product_data:
+  
