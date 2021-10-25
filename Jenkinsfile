@@ -50,7 +50,7 @@ pipeline {
       parallel {
         stage('apigateway') {
           steps {
-            dir(path: '$STAGE_NAME') {
+            dir(path: 'apigateway') {
               sh 'chmod +x ./gradlew'
               sh './gradlew test'
             }
@@ -58,7 +58,7 @@ pipeline {
         }
         stage('configservice') {
           steps {
-            dir(path: '$STAGE_NAME') {
+            dir(path: 'configservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew test'
             }
@@ -66,7 +66,7 @@ pipeline {
         }
         stage('productservice') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: 'productservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew test'
             }
@@ -74,7 +74,7 @@ pipeline {
         }
         stage('registry') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: 'registry') {
               sh 'chmod +x ./gradlew'
               sh './gradlew test'
             }
@@ -82,7 +82,7 @@ pipeline {
         }
         stage('reviewservice') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path 'reviewservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
             }
@@ -95,10 +95,10 @@ pipeline {
       parallel {
         stage('apigateway') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path 'apigateway') {
                 script {
                     def dockerImage = docker.build("")
-                    dockerImage.push("yohanko1/$STAGE_NAME")
+                    dockerImage.push("yohanko1/apigateway")
                 }
             }
           }
