@@ -1,5 +1,9 @@
 pipeline {
   agent any
+  environment {
+  
+  }
+  
   stages {
     stage('Build') {
       parallel {
@@ -11,7 +15,6 @@ pipeline {
             }
           }
         }
-
         stage('Build configservice') {
           steps {
             dir(path: 'configservice') {
@@ -20,7 +23,6 @@ pipeline {
             }
           }
         }
-        
         stage('Build productservice') {
           steps {
             dir(path: 'productservice') {
@@ -29,7 +31,6 @@ pipeline {
             }
           }
         }
-        
         stage('Build registry') {
           steps {
             dir(path: 'registry') {
@@ -38,7 +39,6 @@ pipeline {
             }
           }
         }
-        
         stage('Build reviewservice') {
           steps {
             dir(path: 'reviewservice') {
@@ -47,21 +47,106 @@ pipeline {
             }
           }
         }
-        
       }
     }
 
     stage('Test') {
+      parallel {
+        stage('apigateway') {
+          steps {
+            dir('$STAGE_NAME') {
+              sh 'chmod +x ./gradlew'
+              sh './gradlew test'
+            }
+          }
+        }
+        stage('configservice') {
+          steps {
+            dir('$STAGE_NAME') {
+              sh 'chmod +x ./gradlew'
+              sh './gradlew test'
+            }
+          }
+        }
+        stage('productservice') {
+          steps {
+            dir('$STAGE_NAME') {
+              sh 'chmod +x ./gradlew'
+              sh './gradlew test'
+            }
+          }
+        }
+        stage('registry') {
+          steps {
+            dir('$STAGE_NAME') {
+              sh 'chmod +x ./gradlew'
+              sh './gradlew test'
+            }
+          }
+        }
+        stage('reviewservice') {
+          steps {
+            dir('$STAGE_NAME') {
+              sh 'chmod +x ./gradlew'
+              sh './gradlew build'
+            }
+          }
+        }
+      }
+    }
+    
+    stage('Push Docker image') {
+      parallel
       steps {
-        echo 'Testing..'
+        dir('$STAGE_NAME') {
+          dockerImage = docker.build()
+          dockerImage.push("yohanko1/$STAGE_NAME")
+        }
+      }
+    }
+    
+    stage('Docker push') {
+      parallel {
+        stage('apigateway') {
+          steps {
+            dir('$STAGE_NAME') {
+              dockerImage = docker.build()
+              dockerImage.push("yohanko1/$STAGE_NAME")
+            }
+          }
+        }
+        stage('configservice') {
+          steps {
+            dir('$STAGE_NAME') {
+              
+            }
+          }
+        }
+        stage('productservice') {
+          steps {
+            dir('$STAGE_NAME') {
+            }
+          }
+        }
+        stage('registry') {
+          steps {
+            dir('$STAGE_NAME') {
+            }
+          }
+        }
+        stage('reviewservice') {
+          steps {
+            dir('$STAGE_NAME') {
+            }
+          }
+        }
       }
     }
 
     stage('Deploy') {
       steps {
-        echo 'Deploying....'
+        sh 'docker-compose up -d'
       }
     }
-
   }
 }
