@@ -50,7 +50,7 @@ pipeline {
       parallel {
         stage('apigateway') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: '$STAGE_NAME') {
               sh 'chmod +x ./gradlew'
               sh './gradlew test'
             }
@@ -58,7 +58,7 @@ pipeline {
         }
         stage('configservice') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: '$STAGE_NAME') {
               sh 'chmod +x ./gradlew'
               sh './gradlew test'
             }
