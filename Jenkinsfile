@@ -107,26 +107,49 @@ pipeline {
         }
         stage('configservice') {
           steps {
-            dir('$STAGE_NAME') {
-              
+            dir(path: "$STAGE_NAME") {
+              script {
+                docker.withRegistry('', 'yohanko1-dockerhub') {
+                  def dockerImage = docker.build("yohanko1/$STAGE_NAME")
+                  dockerImage.push()                    
+                }
+              }
             }
           }
         }
         stage('productservice') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: "$STAGE_NAME") {
+              script {
+                docker.withRegistry('', 'yohanko1-dockerhub') {
+                  def dockerImage = docker.build("yohanko1/$STAGE_NAME")
+                  dockerImage.push()                    
+                }
+              }
             }
           }
         }
         stage('registry') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: "$STAGE_NAME") {
+              script {
+                docker.withRegistry('', 'yohanko1-dockerhub') {
+                  def dockerImage = docker.build("yohanko1/$STAGE_NAME")
+                  dockerImage.push()                    
+                }
+              }
             }
           }
         }
         stage('reviewservice') {
           steps {
-            dir('$STAGE_NAME') {
+            dir(path: "$STAGE_NAME") {
+              script {
+                docker.withRegistry('', 'yohanko1-dockerhub') {
+                  def dockerImage = docker.build("yohanko1/$STAGE_NAME")
+                  dockerImage.push()                    
+                }
+              }
             }
           }
         }
@@ -135,7 +158,6 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose'
         sh 'docker-compose up -d'
       }
     }
