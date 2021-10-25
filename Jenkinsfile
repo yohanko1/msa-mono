@@ -94,17 +94,7 @@ pipeline {
         }
       }
     }
-    
-    stage('Push Docker image') {
-      parallel
-      steps {
-        dir('$STAGE_NAME') {
-          dockerImage = docker.build()
-          dockerImage.push("yohanko1/$STAGE_NAME")
-        }
-      }
-    }
-    
+
     stage('Docker push') {
       parallel {
         stage('apigateway') {
