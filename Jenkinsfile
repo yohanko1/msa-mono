@@ -96,10 +96,12 @@ pipeline {
         stage('apigateway') {
           steps {
             dir(path: "$STAGE_NAME") {
-                script {
-                    def dockerImage = docker.build("yohanko1/$STAGE_NAME")
-                    dockerImage.push()
+              script {
+                docker.withRegistry('', 'yohanko1-dockerhub') {
+                  def dockerImage = docker.build("yohanko1/$STAGE_NAME")
+                  dockerImage.push()                    
                 }
+              }
             }
           }
         }
