@@ -95,10 +95,10 @@ pipeline {
       parallel {
         stage('apigateway') {
           steps {
-            dir(path: 'apigateway') {
+            dir(path: "$STAGE_NAME") {
                 script {
-                    def dockerImage = docker.build("")
-                    dockerImage.push("yohanko1/apigateway")
+                    def dockerImage = docker.build("yohanko1/$STAGE_NAME")
+                    dockerImage.push()
                 }
             }
           }
