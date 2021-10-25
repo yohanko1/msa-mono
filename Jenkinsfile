@@ -5,6 +5,7 @@ pipeline {
       steps {
         echo 'Building..'
         dir("apigateway") {
+          sh "chmod +x ./gradlew"
           sh './gradlew build'
         }
       }
