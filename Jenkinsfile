@@ -82,7 +82,7 @@ pipeline {
         }
         stage('reviewservice') {
           steps {
-            dir(path 'reviewservice') {
+            dir(path: 'reviewservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
             }
@@ -95,7 +95,7 @@ pipeline {
       parallel {
         stage('apigateway') {
           steps {
-            dir(path 'apigateway') {
+            dir(path: 'apigateway') {
                 script {
                     def dockerImage = docker.build("")
                     dockerImage.push("yohanko1/apigateway")
