@@ -3,9 +3,8 @@ pipeline {
   stages {
     stage('Build') {
       parallel {
-        stage('Build') {
+        stage('Build apigateway') {
           steps {
-            echo 'Building apigateway'
             dir(path: 'apigateway') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
@@ -13,9 +12,8 @@ pipeline {
           }
         }
 
-        stage('Build') {
+        stage('Build configservice') {
           steps {
-            echo 'Building configservice'
             dir(path: 'configservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
@@ -23,9 +21,8 @@ pipeline {
           }
         }
         
-        stage('Build') {
+        stage('Build productservice') {
           steps {
-            echo 'Building productservice'
             dir(path: 'productservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
@@ -33,9 +30,8 @@ pipeline {
           }
         }
         
-        stage('Build') {
+        stage('Build registry') {
           steps {
-            echo 'Building registry'
             dir(path: 'registry') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
@@ -43,15 +39,15 @@ pipeline {
           }
         }
         
-        stage('Build') {
+        stage('Build reviewservice') {
           steps {
-            echo 'Building reviewservice'
             dir(path: 'reviewservice') {
               sh 'chmod +x ./gradlew'
               sh './gradlew build'
             }
           }
         }
+        
       }
     }
 
