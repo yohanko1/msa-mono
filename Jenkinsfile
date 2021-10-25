@@ -2,12 +2,24 @@ pipeline {
   agent any
   stages {
     stage('Build') {
-      steps {
-        echo 'Building..'
-        dir("apigateway") {
-          sh "chmod +x ./gradlew"
-          sh './gradlew build'
+      parallel {
+        stage('Build') {
+          steps {
+            echo 'Building..'
+            dir(path: 'apigateway') {
+              sh 'chmod +x ./gradlew'
+              sh './gradlew build'
+            }
+
+          }
         }
+
+        stage('') {
+          steps {
+            echo 'Building...'
+          }
+        }
+
       }
     }
 
